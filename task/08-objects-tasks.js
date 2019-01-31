@@ -23,7 +23,9 @@
  *    console.log(r.getArea());   // => 200
  */
 function Rectangle(width, height) {
-    throw new Error('Not implemented');
+    this.width = width;
+    this.height = height;
+    Rectangle.prototype.getArea = () => this.height * this.width;
 }
 
 
@@ -38,6 +40,7 @@ function Rectangle(width, height) {
  *    { width: 10, height : 20 } => '{"height":10,"width":20}'
  */
 function getJSON(obj) {
+    return JSON.stringify(obj);
     throw new Error('Not implemented');
 }
 
@@ -54,6 +57,7 @@ function getJSON(obj) {
  *
  */
 function fromJSON(proto, json) {
+    return Object.setPrototypeOf(JSON.parse(json), proto);
     throw new Error('Not implemented');
 }
 
@@ -107,32 +111,87 @@ function fromJSON(proto, json) {
  */
 
 const cssSelectorBuilder = {
+    /*
+    res: "",
+    count: 0,
+    element: function (value) {
+        if (this.count === 0) {
+            this.res += value;
+            this.count++;
+        }
+        else {
+            this.res += "|" + value;
+        }
+        return this;
+    },
 
-    element: function(value) {
+    id: function (value) {
+        this.res += "#" + value;
+        this.count++;
+        return this;
+    },
+
+    class: function (value) {
+        this.res += "." + value;
+        this.count++;
+        return this;
+    },
+
+    attr: function (value) {
+        this.res += "[" + value + "]";
+        this.count++;
+        return this;
+    },
+
+    pseudoClass: function (value) {
+        this.res += ":" + value;
+        this.count++;
+        return this;
+    },
+
+    pseudoElement: function (value) {
+        this.res += "::" + value;
+        this.count++;
+        return this;
+    },
+
+    combine: function (selector1, combinator, selector2) {
+        this.res = this.res.split("").reverse().join("");
+        this.res = this.res.replace("|", " " + combinator + " ");
+        this.res = this.res.split("").reverse().join("");
+        return this;
+    },
+    stringify: function () {
+        let temp = this.res;
+        this.count = 0;
+        this.res = '';
+        return temp;
+    }*/
+    element: function (value) {
         throw new Error('Not implemented');
     },
 
-    id: function(value) {
+    id: function (value) {
         throw new Error('Not implemented');
     },
 
-    class: function(value) {
+    class: function (value) {
         throw new Error('Not implemented');
     },
 
-    attr: function(value) {
+    attr: function (value) {
         throw new Error('Not implemented');
     },
 
-    pseudoClass: function(value) {
+    pseudoClass: function (value) {
         throw new Error('Not implemented');
     },
 
-    pseudoElement: function(value) {
+    pseudoElement: function (value) {
         throw new Error('Not implemented');
     },
 
-    combine: function(selector1, combinator, selector2) {
+    combine: function (selector1, combinator, selector2) {
         throw new Error('Not implemented');
     },
 };

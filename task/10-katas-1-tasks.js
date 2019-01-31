@@ -17,8 +17,16 @@
  *  ]
  */
 function createCompassPoints() {
-    throw new Error('Not implemented');
-    var sides = ['N','E','S','W'];  // use array of cardinal directions only!
+    //throw new Error('Not implemented');
+    var sides = ['N', 'NbE', 'NNE', 'NEbN', 'NE', 'NEbE',
+        'ENE', 'EbN', 'E', 'EbS', 'ESE',
+        'SEbE', 'SE', 'SEbS', 'SSE', 'SbE', 'S', 'SbW', 'SSW', 'SWbS', 'SW', 'SWbW',
+        'WSW', 'WbS', 'W', 'WbN', 'WNW',
+        'NWbW', 'NW', 'NWbN', 'NNW', 'NbW'];
+    let azimuth = -11.25;
+    return sides.map(el => {
+        return { abbreviation: el, azimuth: azimuth += 11.25 };
+    })
 }
 
 
@@ -88,6 +96,25 @@ function* expandBraces(str) {
  *
  */
 function getZigZagMatrix(n) {
+    let arr = new Array(n).fill([]).map(el => new Array(n));
+    let i = 1, j = 1;
+    for (let e = 0; e < n * n; e++) {
+        arr[i - 1][j - 1] = e;
+        if ((i + j) % 2 == 0) {
+            //Even
+            if (j < n) j++;
+            else i += 2;
+
+            if (i > 1) i--;
+        } else {
+            //Odd
+            if (i < n) i++;
+            else j += 2;
+
+            if (j > 1) j--;
+        }
+    }
+    return arr;
     throw new Error('Not implemented');
 }
 
@@ -110,9 +137,39 @@ function getZigZagMatrix(n) {
  * [[1,1], [2,2], [1,5], [5,6], [6,3]] => false
  * [[1,3], [2,3], [1,4], [2,4], [1,5], [2,5]]  => true
  * [[0,0], [0,1], [1,1], [0,2], [1,2], [2,2], [0,3], [1,3], [2,3], [3,3]] => false
- *
+ *  
  */
 function canDominoesMakeRow(dominoes) {
+    let row = String(dominoes.shift());
+    let i = 0;
+    while (dominoes.length != 0) {
+        if (dominoes[i][0] == row[0]) {
+            row = dominoes[i].reverse() + row;
+            dominoes.splice(i, 1);
+            i = 0;
+        }
+        else if (dominoes[i][1] == row[0]) {
+            row = dominoes[i] + row;
+            dominoes.splice(i, 1);
+            i = 0;
+        }
+        else if (dominoes[i][0] == row[row.length - 1]) {
+            row = row + dominoes[i];
+            dominoes.splice(i, 1);
+            i = 0;
+        }
+        else if (dominoes[i][1] == row[row.length - 1]) {
+            row = row + dominoes[i].reverse();
+            dominoes.splice(i, 1);
+            i = 0;
+        }
+        else {
+            i++;
+            if (i === dominoes.length)
+                return false;
+        }
+    }
+    return true;
     throw new Error('Not implemented');
 }
 
@@ -137,13 +194,41 @@ function canDominoesMakeRow(dominoes) {
  * [ 1, 2, 4, 5]          => '1,2,4,5'
  */
 function extractRanges(nums) {
-    throw new Error('Not implemented');
+    //nums === [ 0, 1, 2, 5, 7, 8, 9];
+    let str = "";
+    nums.push(null);
+    for (let i = 0; i < nums.length - 1; i++) {
+        if (nums[i] + 1 === nums[i + 1]) {
+            str += nums[i] + "-";
+        }
+        else {
+            str += nums[i] + ",";
+        }
+    }
+    //str === '0-1-2,5,7-8-9,'
+    str = str.slice(0, -1).split(",");
+    //str === ["0-1-2", "5", "7-8-9"]
+    str = str.map(el => {
+        el = el.split("-");
+        if (el.length === 1)
+            el = el[0];
+        else
+            if (el.length === 2)
+                el = el[0] + "," + el[1];
+            else
+                if (el.length >= 3)
+                    el = el[0] + "-" + el[el.length - 1];
+        return el;
+    })
+    //str === ["0-2", "5", "7-9"]
+    return str.join(",");
 }
 
 module.exports = {
-    createCompassPoints : createCompassPoints,
-    expandBraces : expandBraces,
-    getZigZagMatrix : getZigZagMatrix,
-    canDominoesMakeRow : canDominoesMakeRow,
-    extractRanges : extractRanges
+    createCompassPoints: createCompassPoints,
+    expandBraces: expandBraces,
+    getZigZagMatrix: getZigZagMatrix,
+    canDominoesMakeRow: canDominoesMakeRow,
+    extractRanges: extractRanges
 };
+

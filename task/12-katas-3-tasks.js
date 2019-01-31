@@ -28,7 +28,47 @@
  *   'NULL'      => false 
  */
 function findStringInSnakingPuzzle(puzzle, searchStr) {
-    throw new Error('Not implemented');
+    puzzle = puzzle.map(el => "*" + el + "*");
+    puzzle.push("");
+    puzzle.unshift("");
+    for (let i = 0; i < puzzle[1].length; i++) {
+        puzzle[0] += "*";
+        puzzle[puzzle.length - 1] += "*";
+    }
+    let lastPoints = [];
+    let l = 0;
+    for (let i = 0; i < puzzle.length; i++) {
+        for (let j = 0; j < puzzle[i].length; j++) {
+            if (searchStr[l] === puzzle[i][j]) {
+                lastPoints.push(i + " " + j);
+                l++;
+                let x = j, y = i;
+                for (l; l < searchStr.length; l++) {
+                    if (lastPoints.indexOf(y + " " + (x - 1)) === -1 && searchStr[l] === puzzle[y][x - 1]) {
+                        x--;
+                    }
+                    else if (lastPoints.indexOf(y + " " + (x + 1)) === -1 && searchStr[l] === puzzle[y][x + 1]) {
+                        x++;
+                    }
+                    else if (lastPoints.indexOf((y - 1) + " " + x) === -1 && searchStr[l] === puzzle[y - 1][x]) {
+                        y--;
+                    }
+                    else if (lastPoints.indexOf((y + 1) + " " + x) === -1 && searchStr[l] === puzzle[y + 1][x]) {
+                        y++;
+                    }
+                    else {
+                        l = 0;
+                        break;
+                        lastPoints = [];
+                    }
+                    lastPoints.push(y + " " + x);
+                    if (l === searchStr.length - 1) return true;
+                }
+            }
+        }
+    }
+    return false;
+    //throw new Error('Not implemented');
 }
 
 
@@ -44,8 +84,13 @@ function findStringInSnakingPuzzle(puzzle, searchStr) {
  *    'ab'  => 'ab','ba'
  *    'abc' => 'abc','acb','bac','bca','cab','cba'
  */
+const Combinatorics = require('js-combinatorics');// :)
 function* getPermutations(chars) {
-    throw new Error('Not implemented');
+    let cmb = Combinatorics.permutation(chars.split("")).toArray();
+    for (let i = 0; i < cmb.length; i++) {
+        yield cmb[i].join("");
+    }
+    //throw new Error('Not implemented');
 }
 
 
@@ -65,7 +110,12 @@ function* getPermutations(chars) {
  *    [ 1, 6, 5, 10, 8, 7 ] => 18  (buy at 1,6,5 and sell all at 10)
  */
 function getMostProfitFromStockQuotes(quotes) {
-    throw new Error('Not implemented');
+    let max = quotes.reverse()[0];
+    return quotes.reduce((profit, curr) => {
+        max = Math.max(max, curr);
+        return profit - curr + max;
+    }, 0);
+    //throw new Error('Not implemented');
 }
 
 
@@ -84,20 +134,38 @@ function getMostProfitFromStockQuotes(quotes) {
  * 
  */
 function UrlShortener() {
-    this.urlAllowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"+
-                           "abcdefghijklmnopqrstuvwxyz"+
-                           "0123456789-_.~!*'();:@&=+$,/?#[]";
+    this.urlAllowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+        "abcdefghijklmnopqrstuvwxyz" +
+        "0123456789-_.~!*'();:@&=+$,/?#[]";
 }
 
 UrlShortener.prototype = {
 
-    encode: function(url) {
-        throw new Error('Not implemented');
+    encode: url => {
+        let res = "";
+        for (let i = 0; i < url.length; i += 2) {
+            let tmp1 = url.charCodeAt(i);
+            let tmp2 = url.charCodeAt(i + 1);
+            let code = (tmp1 << 8) | tmp2;
+            res += String.fromCharCode(code);
+        }
+        return res;
     },
-    
-    decode: function(code) {
-        throw new Error('Not implemented');
-    } 
+
+    decode: code => {
+        let res = "";
+        for (let i = 0; i < code.length; i++) {
+            let char = parseInt(code.charCodeAt(i), 10);
+            let tmp1 = char & 255;
+            let tmp2 = (char >> 8) & 255;
+            if (tmp1 === 0) {
+                res += String.fromCharCode(tmp2)
+            } else {
+                res += String.fromCharCode(tmp2) + String.fromCharCode(tmp1);
+            }
+        }
+        return res;
+    }
 }
 
 

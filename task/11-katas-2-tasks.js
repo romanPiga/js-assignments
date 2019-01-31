@@ -34,7 +34,24 @@
  *
  */
 function parseBankAccount(bankAccount) {
-    throw new Error('Not implemented');
+    let temp =
+        ' _     _  _     _  _  _  _  _ \n' +
+        '| |  | _| _||_||_ |_   ||_||_|\n' +
+        '|_|  ||_  _|  | _||_|  ||_| _|\n';
+    temp = temp.split("\n");
+    let nums = new Array(10).fill("");
+    for (let r = 0; r < 3; r++) {
+        nums = nums.map((el, i) => el += temp[r].slice(i * 3, i * 3 + 3));
+    }
+
+    bankAccount = bankAccount.split("\n");
+    let resNums = new Array(9).fill("");
+    for (let r = 0; r < 3; r++) {
+        resNums = resNums.map((el, i) => el += bankAccount[r].slice(i * 3, i * 3 + 3));
+    }
+
+    return resNums.map(el => nums.indexOf(el)).join("");
+    //throw new Error('Not implemented');
 }
 
 
@@ -63,7 +80,19 @@ function parseBankAccount(bankAccount) {
  *                                                                                                'characters.'
  */
 function* wrapText(text, columns) {
-    throw new Error('Not implemented');
+    text = text.split(" ");
+    let str = "";
+    for (let i = 0; i < text.length; i++) {
+        if (str.length + text[i].length <= columns) {
+            str += text[i] + " ";
+        }
+        else {
+            yield str.slice(0, -1);
+            str = text[i] + " ";
+        }
+    }
+    yield str.slice(0, -1);
+    //throw new Error('Not implemented');
 }
 
 
@@ -135,12 +164,46 @@ function getPokerHandRank(hand) {
  *    '+-------------+\n'
  */
 function* getFigureRectangles(figure) {
-   throw new Error('Not implemented');
+    figure = figure.split("\n");
+    let result = "";
+    for (let i = 0; i < figure.length; i++) {
+        for (let j = 0; j < figure[i].length; j++) {
+            if (figure[i][j] === '+' && (figure[i + 1][j] === '+' || figure[i + 1][j] === '|')) {
+                result += '+';
+                let x = j + 1;
+                for (x; x < figure[i].length; x++) {
+                    if (figure[i][x] === '+' &&
+                        (figure[i + 1][x] === '+' || figure[i + 1][x] === '|')) {
+                        result += "+\n";
+                        break;
+                    }
+                    else result += '-';
+
+                    if (x === figure[i].length - 1 && figure[i][x] !== '+') result = "";
+                }
+                if (result !== "") {
+                    let y = i + 1;
+                    for (y; y < figure.length; y++) {
+                        if (figure[y][x] === '+') {
+                            result += '+' + "-".repeat(x - j - 1) + "+\n";
+                            yield result;
+                            result = '';
+                            break;
+                        }
+                        else result += '|' + " ".repeat(x - j - 1) + "|\n";
+
+                        if (y === figure.length - 1 && figure[y][x] !== '+') result = "";
+                    }
+                }
+            }
+        }
+    }
+    //throw new Error('Not implemented');
 }
 
 
 module.exports = {
-    parseBankAccount : parseBankAccount,
+    parseBankAccount: parseBankAccount,
     wrapText: wrapText,
     PokerRank: PokerRank,
     getPokerHandRank: getPokerHandRank,
