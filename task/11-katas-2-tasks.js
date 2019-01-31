@@ -129,6 +129,31 @@ const PokerRank = {
 }
 
 function getPokerHandRank(hand) {
+    let suits = '♥♠♦♣';
+    let digits = 'A234567891JQK';
+
+    let suits_arr = new Array(suits.length).fill(0);
+    let digit_arr = new Array(digits.length).fill(0);
+
+    for (let card of hand) {
+        suits_arr[suits.indexOf(card.slice(-1))]++;
+        digit_arr[digits.indexOf(card[0])]++;
+    }
+
+    digit_arr.push(digit_arr[0]);
+
+    let suits_string = suits_arr.join('');
+    let digit_string = digit_arr.join('');
+
+    return (digit_string.indexOf('11111') !== -1) && (suits_string.indexOf('5') !== -1) ? PokerRank.StraightFlush
+        : (digit_string.indexOf('4') !== -1) ? PokerRank.FourOfKind
+            : (digit_string.indexOf('2') !== -1) && (digit_string.indexOf('3') !== -1) ? PokerRank.FullHouse
+                : (suits_string.indexOf('5') !== -1) ? PokerRank.Flush
+                    : (digit_string.indexOf('11111') !== -1) ? PokerRank.Straight
+                        : (digit_string.indexOf('3') !== -1) ? PokerRank.ThreeOfKind
+                            : (digit_string.match(/2.*2.+/)) ? PokerRank.TwoPairs
+                                : (digit_string.indexOf('2') !== -1) ? PokerRank.OnePair
+                                    : PokerRank.HighCard;
     throw new Error('Not implemented');
 }
 
